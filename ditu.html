@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=uft-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>百度地图批量标注地点</title>
+    <style type="text/css">
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            font-family: "微软雅黑";
+        }
+
+        #l-map {
+            height: 100%;
+            width: 100%;
+        }
+
+        #r-result {
+            width: 100%;
+            font-size: 14px;
+            line-height: 20px;
+        }
+    </style>
+    <script type="text/javascript"
+        src="http://api.map.baidu.com/api?v=2.0&ak=duaE7gEWkw9LUCnkX1GDf4jo2nGyL84H"></script>
+</head>
+
+<body>
+    <div id="l-map"></div>
+    <div id="r-result">
+        <input type="button" value="批量反地址解析+商圈" />
+        <div id="result"></div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript">
+    // 百度地图API功能
+    var map = new BMap.Map("l-map");
+    map.centerAndZoom(new BMap.Point(114.064505, 22.54918), 12); //初始位置
+    map.enableScrollWheelZoom(true);
+    var index = 0;
+    var myGeo = new BMap.Geocoder();
+    var adds = [
+        // 把excel表格内的代码内容共复制到此处
+        new BMap.Point(114.08909730499738, 22.550862570205812),
+        new BMap.Point(114.0904476001107, 22.55046344622974),
+        new BMap.Point(114.0904476001107, 22.55046344622974),
+
+
+    ];
+    labels = [
+        // 把excel表格内的要显示的标签内容复制到此处
+        '中国电信',
+        '中国电信',
+        '中国电信',
+
+
+
+    ];
+    for (var i = 0; i < adds.length; i++) {
+        var marker = new BMap.Marker(adds[i]);
+        map.addOverlay(marker);
+        marker.setLabel(new BMap.Label(labels[i], { offset: new BMap.Size(20, -15) }));
+    }
+    function bdGEO() {
+        var pt = adds[index];
+        geocodeSearch(pt);
+        index++;
+    }
+    function geocodeSearch(pt) {
+        if (index < adds.length - 1) {
+            setTimeout(window.bdGEO, 400);
+        }
+        myGeo.getLocation(pt, function (rs) {
+            var addComp = rs.addressComponents;
+            document.getElementById("result").innerHTML += index + ". " + adds[index - 1].lng + "," + adds[index - 1].lat + "：" + "商圈(" + rs.business + ")  结构化数据(" + addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber + ")<br/><br/>";
+        });
+    }
+
+
+</script>
